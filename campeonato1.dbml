@@ -1,0 +1,149 @@
+Table Equipos {
+	equi_cod integer [ pk, increment, not null, unique ]
+	equi_nombre varchar [ not null, unique ]
+	ent_cod integer
+	est_cod integer
+}
+
+Table Jugadores {
+	jug_cod integer [ pk, increment, not null, unique ]
+	jug_nombre varchar [ not null ]
+	jug_apellido varchar [ not null ]
+	cui_cod integer
+	equi_cod integer
+}
+
+Table Estadio {
+	est_cod integer [ pk, increment, not null, unique ]
+	est_nombre varchar [ not null ]
+	est_capacidad numeric
+	cui_cod integer
+}
+
+Table cuidades {
+	cui_cod integer [ pk, increment, not null, unique ]
+	cui_desc varchar [ not null ]
+}
+
+Table Juegos {
+	jue_cod integer [ pk, increment, not null, unique ]
+	jue_local integer [ not null ]
+	jue_visitante integer [ not null ]
+	jue_duracion time
+	jue_fecha date
+	est_cod integer
+}
+
+Table Arbitros {
+	arb_cod integer [ pk, increment, not null, unique ]
+	arb_nombre varchar [ not null ]
+	arb_apellido varchar [ not null ]
+	jue_cod integer [ not null ]
+}
+
+Table Entrenadores {
+	ent_cod integer [ pk, increment, not null, unique ]
+	ent_nombre varchar [ not null ]
+	ent_apellido varchar [ not null ]
+	equi_cod integer
+}
+
+Table Analisis de Jugador {
+	ana_cod integer [ pk, increment, not null, unique ]
+	ana_gol integer
+	ana_asistencias integer
+	ana_trjamarilla integer
+	ana_trjroja integer
+	ana_partidosjugados integer
+	jug_cod integer
+}
+
+Table Clientes {
+	cli_cod integer [ pk, increment, not null, unique ]
+	cli_nombre varchar [ not null ]
+	cli_apellido varchar [ not null ]
+	cli_tel integer
+	ciu_cod integer
+}
+
+Table Agenda Entradas {
+	age_cod integer [ pk, increment, not null, unique ]
+	age_fecha date
+	jue_cod integer [ not null ]
+}
+
+Table Entradas {
+	ent_cod integer [ pk, increment, not null, unique ]
+	ent_precio integer [ not null ]
+	ent_estado varchar
+	ent_fechareserva date
+	cli_cod integer [ not null ]
+	age_cod integer
+}
+
+Table Recordatorios {
+	rec_cod integer [ pk, increment, not null, unique ]
+	rec_mensaje text [ not null ]
+	rec_fecha date
+	ent_cod integer
+}
+
+Ref fk_cuidades_cui_cod_Estadio {
+	cuidades.cui_cod - Estadio.cui_cod [ delete: restrict, update: cascade ]
+}
+
+Ref fk_cuidades_cui_cod_Jugadores {
+	cuidades.cui_cod < Jugadores.cui_cod [ delete: restrict, update: cascade ]
+}
+
+Ref fk_Equipos_equi_estadio_Estadio {
+	Equipos.est_cod - Estadio.est_cod [ delete: restrict, update: cascade ]
+}
+
+Ref fk_Equipos_equi_cod_JuegosLOC {
+	Equipos.equi_cod < Juegos.jue_local [ delete: restrict, update: cascade ]
+}
+
+Ref fk_Juegos_est_cod_Estadio {
+	Juegos.est_cod - Estadio.est_cod [ delete: restrict, update: cascade ]
+}
+
+Ref fk_Equipos_equi_cod_JuegosVIS {
+	Equipos.equi_cod < Juegos.jue_visitante [ delete: restrict, update: cascade ]
+}
+
+Ref fk_Arbitros_jue_cod_Juegos {
+	Arbitros.jue_cod < Juegos.jue_cod [ delete: restrict, update: cascade ]
+}
+
+Ref fk_Entrenadores_equi_cod_Equipos {
+	Entrenadores.equi_cod - Equipos.equi_cod [ delete: restrict, update: cascade ]
+}
+
+Ref fk_Equipos_equi_cod_Jugadores {
+	Equipos.equi_cod < Jugadores.equi_cod [ delete: restrict, update: cascade ]
+}
+
+Ref fk_Analisis de Jugador_jug_cod_Jugadores {
+	Analisis de Jugador.jug_cod - Jugadores.jug_cod [ delete: no action, update: no action ]
+}
+
+Ref fk_Clientes_ciu_cod_cuidades {
+	Clientes.ciu_cod > cuidades.cui_cod [ delete: cascade, update: restrict ]
+}
+
+Ref fk_Agenda Entradas_jue_cod_Juegos {
+	Agenda Entradas.jue_cod < Juegos.jue_cod [ delete: cascade, update: restrict ]
+}
+
+Ref fk_Agenda Entradas_age_cod_Entradas {
+	Agenda Entradas.age_cod < Entradas.age_cod [ delete: no action, update: no action ]
+}
+
+Ref fk_Clientes_cli_nombre_Entradas {
+	Clientes.cli_nombre < Entradas.cli_cod [ delete: restrict, update: cascade ]
+}
+
+Ref fk_Entradas_ent_cod_Recordatorios {
+	Entradas.ent_cod < Recordatorios.ent_cod [ delete: cascade, update: restrict ]
+}
